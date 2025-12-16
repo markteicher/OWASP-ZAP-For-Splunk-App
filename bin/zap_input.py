@@ -7,13 +7,16 @@ from splunklib.modularinput import Script, Event, Scheme, Argument
 
 from zap_client import ZAPClient
 from zap_collectors.alerts import collect_alerts
+from zap_collectors.sites import collect_sites
+from zap_collectors.scans import collect_scans
+from zap_collectors.contexts import collect_contexts
 
 
 class ZAPInput(Script):
 
     def get_scheme(self):
-        scheme = Scheme("ZAProxy Alerts Input")
-        scheme.description = "Collect alerts from OWASP ZAP via API"
+        scheme = Scheme("ZAProxy Modular Input")
+        scheme.description = "Collect data from OWASP ZAP via API"
         scheme.use_external_validation = True
         scheme.streaming_mode_xml = False
 
@@ -21,7 +24,7 @@ class ZAPInput(Script):
             Argument(
                 name="zap_url",
                 title="ZAP Base URL",
-                description="Base URL of the ZAP instance (e.g. http://localhost:8080)",
+                description="Base URL of the ZAP instance",
                 required_on_create=True
             )
         )
@@ -48,11 +51,11 @@ class ZAPInput(Script):
         return scheme
 
     def stream_events(self, inputs, ew):
-        for input_name, input_item in inputs.inputs.items():
+        for stanza, item in inputs.inputs.items():
 
-            zap_url = input_item["zap_url"]
-            api_key = input_item["api_key"]
-            verify_ssl = input_item.get("verify_ssl", "true").lower() == "true"
+            zap_url = item["zap_url"]
+            api_key = item["api_key"]
+            verify_ssl = item.get("verify_ssl", "true").lower() == "true"
 
             zap = ZAPClient(
                 base_url=zap_url,
@@ -60,12 +63,31 @@ class ZAPInput(Script):
                 verify_ssl=verify_ssl
             )
 
-            alerts = collect_alerts(zap)
+            # Determine feed type from stanza
+            if stanza.startswith("zaproxy_alerts://"):
+                records = collect_alerts(zap)
+                sourcetype = "zap:alert"
 
-            for alert in alerts:
+            elif stanza.startswith("zaproxy_sites://"):
+                records = collect_sites(zap)
+                sourcetype = "zap:site"
+
+            elif stanza.startswith("zaproxy_scans://"):
+                records = collect_scans(zap)
+                sourcetype = "zap:scan"
+
+            elif stanza.startswith("zaproxy_contexts://"):
+                records = collect_contexts(zap)
+                sourcetype = "zap:context"
+
+            else:
+                # Unknown stanza type – skip safely
+                continue
+
+            for record in records:
                 event = Event(
-                    data=json.dumps(alert),
-                    sourcetype="zap:alert"
+                    data=json.dumps(record),
+                    sourcetype=sourcetype
                 )
                 ew.write_event(event)
 
