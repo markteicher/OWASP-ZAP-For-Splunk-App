@@ -1,0 +1,14 @@
+<nav search_view="zap_overview" color="#005A9C">
+  <title>ZAProxy Security Analytics</title>
+
+  <view name="zap_overview" default="true" />
+
+  <collection label="Security Analysis">
+    <view name="zap_alerts" />
+    <view name="zap_scans" />
+  </collection>
+
+  <collection label="Attack Surface">
+    <view name="zap_surface" />
+  </collection>
+</nav>
