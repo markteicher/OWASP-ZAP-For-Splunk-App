@@ -1,1 +1,30 @@
+<setup>
+  <block title="ZAProxy Configuration">
+    <text>
+      Configure the connection to your OWASP ZAP instance.
+      These settings are required for the app to collect data.
+    </text>
 
+    <input type="text" field="zap_url" label="ZAP Base URL">
+      <help>
+        Base URL of the ZAP instance (for example: https://zap.example.internal:8080)
+      </help>
+    </input>
+
+    <input type="password" field="api_key" label="ZAP API Key">
+      <help>
+        API key used to authenticate to the ZAP API.
+        This value is stored securely by Splunk.
+      </help>
+    </input>
+
+    <input type="radio" field="verify_ssl" label="Verify SSL Certificates">
+      <choice value="true">Yes</choice>
+      <choice value="false">No</choice>
+      <default>true</default>
+      <help>
+        Disable only if using self-signed certificates.
+      </help>
+    </input>
+  </block>
+</setup>
