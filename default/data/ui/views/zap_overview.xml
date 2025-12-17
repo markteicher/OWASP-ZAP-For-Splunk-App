@@ -1,0 +1,98 @@
+<dashboard version="1.1">
+  <label>ZAProxy Overview</label>
+  <description>
+    High-level security and scan activity overview for OWASP ZAP.
+  </description>
+
+  <row>
+    <panel>
+      <title>Alerts by Risk (Last 24h)</title>
+      <chart>
+        <search>
+          <query>
+            index=zaproxy sourcetype=zap:alert
+            | stats count by risk
+            | sort - count
+          </query>
+          <earliest>-24h</earliest>
+          <latest>now</latest>
+        </search>
+
+        <option name="charting.chart">pie</option>
+        <option name="charting.legend.placement">right</option>
+
+        <!-- Risk color mapping -->
+        <option name="charting.fieldColors">
+          {"High":"#D32F2F","Medium":"#F9A825","Low":"#388E3C","Informational":"#1976D2"}
+        </option>
+      </chart>
+    </panel>
+
+    <panel>
+      <title>Alerts Over Time (Last 24h)</title>
+      <chart>
+        <search>
+          <query>
+            index=zaproxy sourcetype=zap:alert
+            | timechart span=1h count
+          </query>
+          <earliest>-24h</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="charting.chart">line</option>
+      </chart>
+    </panel>
+  </row>
+
+  <row>
+    <panel>
+      <title>Active Scans</title>
+      <table>
+        <search>
+          <query>
+            index=zaproxy sourcetype=zap:scan
+            | where status!="finished"
+            | table _time scan_type scan_id url status progress
+          </query>
+          <earliest>-24h</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="rowNumbers">true</option>
+        <option name="count">10</option>
+      </table>
+    </panel>
+  </row>
+
+  <row>
+    <panel>
+      <title>Known Sites</title>
+      <single>
+        <search>
+          <query>
+            index=zaproxy sourcetype=zap:site
+            | stats dc(site) as sites
+          </query>
+          <earliest>-7d</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="unit">Sites</option>
+      </single>
+    </panel>
+
+    <panel>
+      <title>Contexts Defined</title>
+      <single>
+        <search>
+          <query>
+            index=zaproxy sourcetype=zap:context
+            | stats dc(context_name) as contexts
+          </query>
+          <earliest>-7d</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="unit">Contexts</option>
+      </single>
+    </panel>
+  </row>
+
+</dashboard>
