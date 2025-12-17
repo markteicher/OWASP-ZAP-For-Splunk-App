@@ -1,0 +1,108 @@
+<dashboard version="1.1">
+  <label>ZAProxy Scans</label>
+  <description>
+    Visibility into OWASP ZAP spider and active scan activity.
+  </description>
+
+  <row>
+    <panel>
+      <title>Scans by Type</title>
+      <chart>
+        <search>
+          <query>
+            index=zaproxy sourcetype=zap:scan
+            | stats count by scan_type
+          </query>
+          <earliest>-7d</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="charting.chart">pie</option>
+        <option name="charting.legend.placement">right</option>
+      </chart>
+    </panel>
+
+    <panel>
+      <title>Scans by Status</title>
+      <chart>
+        <search>
+          <query>
+            index=zaproxy sourcetype=zap:scan
+            | stats count by status
+          </query>
+          <earliest>-7d</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="charting.chart">bar</option>
+        <option name="charting.legend.placement">none</option>
+      </chart>
+    </panel>
+  </row>
+
+  <row>
+    <panel>
+      <title>Active / In-Progress Scans</title>
+      <table>
+        <search>
+          <query>
+            index=zaproxy sourcetype=zap:scan
+            | where status!="finished"
+            | table _time scan_type scan_id url status progress policy method
+            | sort - _time
+          </query>
+          <earliest>-24h</earliest>
+          <latest>now</latest>
+        </search>
+
+        <option name="wrap">true</option>
+        <option name="rowNumbers">true</option>
+        <option name="count">20</option>
+
+        <!-- Scan status color mapping -->
+        <format type="color" field="status">
+          <colorPalette type="map">
+            <mapping value="running" color="#1976D2"/>
+            <mapping value="finished" color="#388E3C"/>
+            <mapping value="paused" color="#F9A825"/>
+            <mapping value="failed" color="#D32F2F"/>
+            <mapping value="error" color="#D32F2F"/>
+          </colorPalette>
+        </format>
+
+      </table>
+    </panel>
+  </row>
+
+  <row>
+    <panel>
+      <title>Completed Scans</title>
+      <table>
+        <search>
+          <query>
+            index=zaproxy sourcetype=zap:scan
+            | where status="finished"
+            | table _time scan_type scan_id url status
+            | sort - _time
+          </query>
+          <earliest>-7d</earliest>
+          <latest>now</latest>
+        </search>
+
+        <option name="rowNumbers">true</option>
+        <option name="count">20</option>
+
+        <!-- Scan status color mapping -->
+        <format type="color" field="status">
+          <colorPalette type="map">
+            <mapping value="running" color="#1976D2"/>
+            <mapping value="finished" color="#388E3C"/>
+            <mapping value="paused" color="#F9A825"/>
+            <mapping value="failed" color="#D32F2F"/>
+            <mapping value="error" color="#D32F2F"/>
+          </colorPalette>
+        </format>
+
+      </table>
+    </panel>
+  </row>
+
+</dashboard>
