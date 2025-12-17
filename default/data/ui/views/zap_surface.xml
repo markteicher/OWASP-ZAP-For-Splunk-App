@@ -1,0 +1,62 @@
+<dashboard version="1.1">
+  <label>ZAProxy Attack Surface</label>
+  <description>
+    Visibility into application scope, known sites, and ZAP contexts.
+  </description>
+
+  <row>
+    <panel>
+      <title>Known Sites Over Time</title>
+      <chart>
+        <search>
+          <query>
+            index=zaproxy sourcetype=zap:site
+            | timechart span=1d dc(site) as sites
+          </query>
+          <earliest>-30d</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="charting.chart">line</option>
+      </chart>
+    </panel>
+  </row>
+
+  <row>
+    <panel>
+      <title>Known Sites</title>
+      <table>
+        <search>
+          <query>
+            index=zaproxy sourcetype=zap:site
+            | stats earliest(_time) as first_seen latest(_time) as last_seen by site
+            | sort site
+          </query>
+          <earliest>-90d</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="rowNumbers">true</option>
+        <option name="count">20</option>
+      </table>
+    </panel>
+  </row>
+
+  <row>
+    <panel>
+      <title>Contexts Defined</title>
+      <table>
+        <search>
+          <query>
+            index=zaproxy sourcetype=zap:context
+            | stats earliest(_time) as first_seen latest(_time) as last_seen by context_name
+            | sort context_name
+          </query>
+          <earliest>-90d</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="rowNumbers">true</option>
+        <option name="count">20</option>
+      </table>
+    </panel>
+  </row>
+
+</dashboard>
