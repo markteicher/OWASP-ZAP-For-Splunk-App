@@ -1,0 +1,47 @@
+flowchart LR
+    subgraph ZAP["OWASP ZAP"]
+        Z1["ZAP API<br/>core / alerts / scans / sites / contexts"]
+    end
+
+    subgraph SPLUNK_APP["ZAProxy Splunk App"]
+        direction TB
+
+        SETUP["setup.xml<br/>Secure Config"]
+        INPUTS["inputs.conf<br/>Modular Inputs"]
+
+        ZCLIENT["zap_client.py<br/>API Client"]
+        COLLECTORS["Collectors<br/>alerts.py<br/>scans.py<br/>sites.py<br/>contexts.py"]
+        NORMALIZE["zap_normalize.py<br/>Schema Lock"]
+        UTILS["zap_utils.py<br/>Logging / Retry / Safety"]
+
+        MODINPUT["zap_input.py<br/>Modular Input"]
+    end
+
+    subgraph SPLUNK["Splunk Platform"]
+        INDEX["Index: zaproxy"]
+        PROPS["props.conf<br/>JSON Parsing"]
+        VIEWS["Dashboards<br/>Overview / Alerts / Scans / Surface"]
+        NAV["default.xml<br/>Navigation"]
+        BRAND["App Branding<br/>app.conf + Icons"]
+    end
+
+    %% Flow
+    SETUP --> INPUTS
+    INPUTS --> MODINPUT
+
+    MODINPUT --> ZCLIENT
+    ZCLIENT --> Z1
+
+    ZCLIENT --> COLLECTORS
+    COLLECTORS --> NORMALIZE
+    NORMALIZE --> MODINPUT
+
+    UTILS --> ZCLIENT
+    UTILS --> MODINPUT
+
+    MODINPUT --> INDEX
+    PROPS --> INDEX
+
+    INDEX --> VIEWS
+    NAV --> VIEWS
+    BRAND --> VIEWS
