@@ -1,0 +1,94 @@
+<dashboard version="1.1">
+  <label>ZAProxy Alerts</label>
+  <description>
+    Detailed vulnerability findings collected from OWASP ZAP.
+  </description>
+
+  <row>
+    <panel>
+      <title>Alerts by Risk</title>
+      <chart>
+        <search>
+          <query>
+            index=zaproxy sourcetype=zap:alert
+            | stats count by risk
+            | sort - count
+          </query>
+          <earliest>-30d</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="charting.chart">bar</option>
+        <option name="charting.legend.placement">none</option>
+      </chart>
+    </panel>
+
+    <panel>
+      <title>Alerts by Confidence</title>
+      <chart>
+        <search>
+          <query>
+            index=zaproxy sourcetype=zap:alert
+            | stats count by confidence
+            | sort - count
+          </query>
+          <earliest>-30d</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="charting.chart">bar</option>
+        <option name="charting.legend.placement">none</option>
+      </chart>
+    </panel>
+  </row>
+
+  <row>
+    <panel>
+      <title>Top Alert Types</title>
+      <table>
+        <search>
+          <query>
+            index=zaproxy sourcetype=zap:alert
+            | stats count as occurrences by alert_name
+            | sort - occurrences
+            | head 10
+          </query>
+          <earliest>-30d</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="count">10</option>
+      </table>
+    </panel>
+  </row>
+
+  <row>
+    <panel>
+      <title>Alert Details</title>
+      <table>
+        <search>
+          <query>
+            index=zaproxy sourcetype=zap:alert
+            | table _time risk confidence alert_name url param attack evidence solution reference
+            | sort - _time
+          </query>
+          <earliest>-30d</earliest>
+          <latest>now</latest>
+        </search>
+
+        <option name="wrap">true</option>
+        <option name="rowNumbers">true</option>
+        <option name="count">20</option>
+
+        <!-- Risk color mapping -->
+        <format type="color" field="risk">
+          <colorPalette type="map">
+            <mapping value="High" color="#D32F2F"/>
+            <mapping value="Medium" color="#F9A825"/>
+            <mapping value="Low" color="#388E3C"/>
+            <mapping value="Informational" color="#1976D2"/>
+          </colorPalette>
+        </format>
+
+      </table>
+    </panel>
+  </row>
+
+</dashboard>
