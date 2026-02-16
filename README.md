@@ -1,4 +1,4 @@
-![OWASP ZAP](docs/images/owasp_zap_logo.jpg)
+![OWASP ZAP](docs/images/zapproxy_logo.jpg)
 
 
 
