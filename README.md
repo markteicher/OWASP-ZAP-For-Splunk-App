@@ -126,12 +126,11 @@ OWASP ZAP provides visibility into the following assets and metadata:
 | Trends | Vulnerability trending |
 | Operations | Ingestion and API health |
 
-Dashboards are designed for **investigation-driven workflows**, not executive-only summaries.
 
 ---
 
 # OWASP ZAP for Splunk App  
-## Sourcetype → Dashboard Mapping (Authoritative)
+## Sourcetype → Dashboard Mapping
 
 ### 🟦 Core Scan Data
 
