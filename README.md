@@ -5,7 +5,7 @@
 # OWASP ZAP For Splunk App
 
 
-![OWASP ZAP](docs/images/zapproxy_logo.jpg)
+![OWASP ZAP](docs/images/zap_owasp_highlevel.jpg)
 
 ## Introduction
 
