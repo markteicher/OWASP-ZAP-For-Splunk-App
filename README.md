@@ -5,6 +5,8 @@
 # OWASP ZAP For Splunk App
 
 
+![OWASP ZAP](docs/images/zapproxy_logo.jpg)
+
 ## Introduction
 
 OWASP Zed Attack Proxy (ZAP) is a leading open-source web application security testing platform maintained by the Open Web Application Security Project (OWASP). It provides automated and manual testing capabilities for identifying vulnerabilities in web applications, APIs, and services.
