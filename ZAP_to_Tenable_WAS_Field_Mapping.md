@@ -1,8 +1,7 @@
-# ZAP to Tenable WAS Mapping
+# ZAP to Tenable WAS Field Mapping
 
-## Core Scan Data Mapping
 
-| ZAP sourcetype | Dashboards | Best Tenable WAS equivalent | Fit |
+| ZAP Field | Dashboards | Tenable WAS Field | Fit |
 |---|---|---|---|
 | `zap:alert` | Overview, Alerts | Findings table | Good |
 | `zap:alert:evidence` | Alerts Detail | Finding detail / evidence fields, not in listed table | Partial |
